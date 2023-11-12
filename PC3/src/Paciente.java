@@ -1,3 +1,4 @@
+import java.awt.*;
 import java.util.List;
 
 public class Paciente extends Persona {
@@ -5,7 +6,7 @@ public class Paciente extends Persona {
     private String direccion;
     private int peso;
     private int temperatura;
-    private List<String> pacientes;
+    private Medico medicoAsignado;
 
     public Paciente(String nombre, int DNI, String direccion, int peso, int temperatura) {
         super(nombre);
@@ -47,7 +48,8 @@ public class Paciente extends Persona {
         this.temperatura = temperatura;
     }
 
-    public void registrarPaciente () {
 
+    public Medico getMedicoAtendiente() {
+        return medicoAsignado;
     }
 }

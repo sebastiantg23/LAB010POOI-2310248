@@ -1,24 +1,17 @@
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Scanner;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class Main {
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
 
+
+        List<Paciente> pacientes = new ArrayList<>();
         Paciente paciente1 = new Paciente("Luis", 729323, "El Agustino, Mz M lt 22", 56, 34);
         Paciente paciente2 = new Paciente("Pedro", 9712994, "Los Olivos, Mz J lt 56", 77, 33);
         Paciente paciente3 = new Paciente("Andre", 903175, "Surco, Mz O lt 11", 66, 38);
         Paciente paciente4 = new Paciente("Alberto", 528492, "Chaclacayo, MZ A lt 16", 67, 35);
         Paciente paciente5 = new Paciente("Luisa", 6192846, "Rimac, MZ Ñ lt 67", 80, 35);
-
-        Medico medico1 = new Medico("Brandom", 291023, "Oftalmologia");
-        Medico medico2 = new Medico("Martha", 291023, "Gastro");
-        Medico medico3 = new Medico("Joaquin", 291023, "Dermatologia");
-        Medico medico4 = new Medico("Karen", 291023, "Cardiologia");
-        Medico medico5 = new Medico("Manuel", 291023, "Neurologia");
-
-        List<Paciente> pacientes = new ArrayList<>();
         pacientes.add(paciente1);
         pacientes.add(paciente2);
         pacientes.add(paciente3);
@@ -26,15 +19,19 @@ public class Main {
         pacientes.add(paciente5);
 
         List<Medico> doctores = new ArrayList<>();
+        Medico medico1 = new Medico("Brandom", 291023, "Oftalmologia", pacientes);
+        Medico medico2 = new Medico("Martha", 291023, "Gastro", pacientes);
+        Medico medico3 = new Medico("Joaquin", 291023, "Dermatologia", pacientes);
+        Medico medico4 = new Medico("Karen", 291023, "Cardiologia", pacientes);
+        Medico medico5 = new Medico("Manuel", 291023, "Neurologia", pacientes);
         doctores.add(medico1);
         doctores.add(medico2);
         doctores.add(medico3);
         doctores.add(medico4);
         doctores.add(medico5);
 
-        int opcion;
 
-        do {
+        while (true) {
             System.out.println("=== Menú ===");
             System.out.println("1. Registrar paciente");
             System.out.println("2. Eliminar paciente");
@@ -48,51 +45,188 @@ public class Main {
             System.out.println("10. Buscar doctores por especialidad");
             System.out.println("0. Salir");
             System.out.print("Selecciona una opción: ");
-            opcion = scanner.nextInt();
+            int option = scanner.nextInt();
 
-            switch (opcion) {
+            switch (option) {
                 case 1:
-                    // Operación 1: Registrar paciente
-                    
+                    registrarPaciente(pacientes, scanner);
                     break;
                 case 2:
-                    // Operación 2: Eliminar paciente
+                    eliminarPaciente(pacientes, scanner);
                     break;
                 case 3:
-                    // Operación 3: Modificar paciente
+                    modificarPaciente(pacientes, scanner);
                     break;
                 case 4:
-                    // Operación 4: Mostrar peso más repetido
+                    mostrarPesoMasRepetido(pacientes);
                     break;
                 case 5:
-                    // Operación 5: Mostrar cantidad de pacientes con peso repetido
+                    mostrarCantidadPacientesPorPeso(pacientes, scanner);
                     break;
                 case 6:
-                    // Operación 6: Mostrar peso mayor y menor
+                    mostrarPesoMayorMenor(pacientes);
                     break;
                 case 7:
-                    // Operación 7: Dividir rango de pesos
+                    dividirRangoPesos(pacientes);
                     break;
                 case 8:
-                    // Operación 8: Mostrar pacientes ordenados por apellidos
+                    mostrarListaPacientesOrdenados(pacientes);
                     break;
                 case 9:
-                    // Operación 9: Buscar doctor de paciente
+                    indicarMedicoDePaciente(pacientes, doctores, scanner);
                     break;
                 case 10:
-                    // Operación 10: Buscar doctores por especialidad
+                    buscarMedicosPorEspecialidad(doctores, scanner);
                     break;
                 case 0:
-                    System.out.println("Saliendo del programa...");
+                    System.out.println("Programa finalizado");
+                    System.exit(0);
                     break;
                 default:
                     System.out.println("Opción no válida. Inténtalo de nuevo.");
                     break;
             }
+        }
+    }
+    private static void registrarPaciente(List<Paciente> pacientes, Scanner scanner) {
+        System.out.println("Ingrese el nombre del paciente:");
+        String nombre = scanner.next();
+        System.out.println("Ingrese el DNI del paciente:");
+        int dni = scanner.nextInt();
+        System.out.println("Ingrese la dirección del paciente:");
+        String direccion = scanner.next();
+        System.out.println("Ingrese el peso del paciente:");
+        int peso = scanner.nextInt();
+        System.out.println("Ingrese la temperatura del paciente:");
+        int temperatura = scanner.nextInt();
 
-        } while (opcion != 0);
+        Paciente nuevoPaciente = new Paciente(nombre, dni, direccion, peso, temperatura);
+        pacientes.add(nuevoPaciente);
+        System.out.println("Paciente registrado con éxito.");
+    }
+    private static void eliminarPaciente(List<Paciente> pacientes, Scanner scanner) {
+        System.out.println("Ingrese la posición del paciente a eliminar:");
+        int posicion = scanner.nextInt();
 
-        scanner.close();
+        if (posicion >= 0 && posicion < pacientes.size()) {
+            Paciente pacienteEliminado = pacientes.remove(posicion);
+            System.out.println("Paciente eliminado: " + pacienteEliminado.getNombre());
+        } else {
+            System.out.println("Posición no válida. No se eliminó ningún paciente.");
+        }
+    }
+    private static void modificarPaciente(List<Paciente> pacientes, Scanner scanner) {
+        System.out.println("Ingrese la posición del paciente a modificar:");
+        int posicion = scanner.nextInt();
+
+        if (posicion >= 0 && posicion < pacientes.size()) {
+            Paciente paciente = pacientes.get(posicion);
+
+            System.out.println("Ingrese el nuevo peso:");
+            int nuevoPeso = scanner.nextInt();
+            System.out.println("Ingrese la nueva temperatura:");
+            int nuevaTemperatura = scanner.nextInt();
+
+            paciente.setPeso(nuevoPeso);
+            paciente.setTemperatura(nuevaTemperatura);
+
+            System.out.println("Datos del paciente modificados con éxito.");
+        } else {
+            System.out.println("Posición no válida. No se modificó ningún paciente.");
+        }
+    }
+    private static void mostrarPesoMasRepetido(List<Paciente> pacientes) {
+        if (pacientes.isEmpty()) {
+            System.out.println("No hay pacientes registrados.");
+        } else {
+            Map<Integer, Long> pesoFrecuencia = pacientes.stream()
+                    .collect(Collectors.groupingBy(Paciente::getPeso, Collectors.counting()));
+
+            int pesoMasRepetido = Collections.max(pesoFrecuencia.entrySet(), Map.Entry.comparingByValue()).getKey();
+            System.out.println("El peso más repetido es: " + pesoMasRepetido);
+        }
+    }
+    private static void mostrarCantidadPacientesPorPeso(List<Paciente> pacientes, Scanner scanner) {
+        System.out.println("Ingrese el peso a buscar:");
+        int pesoBuscado  = scanner.nextInt();
+        long cantidad = pacientes.stream().filter(p -> p.getPeso() == pesoBuscado).count();
+        System.out.println("Cantidad de pacientes con peso " + pesoBuscado + ": " + cantidad);
+    }
+    private static void mostrarPesoMayorMenor(List<Paciente> pacientes) {
+        if (pacientes.isEmpty()) {
+            System.out.println("No hay pacientes registrados.");
+        } else {
+            int pesoMayor = pacientes.stream().mapToInt(Paciente::getPeso).max().getAsInt();
+            int pesoMenor = pacientes.stream().mapToInt(Paciente::getPeso).min().getAsInt();
+            System.out.println("Peso mayor: " + pesoMayor);
+            System.out.println("Peso menor: " + pesoMenor);
+        }
+    }
+    private static void dividirRangoPesos(List<Paciente> pacientes) {
+        if (pacientes.isEmpty()) {
+            System.out.println("No hay pacientes registrados.");
+        } else {
+            int pesoMinimo = pacientes.stream().mapToInt(Paciente::getPeso).min().getAsInt();
+            int pesoMaximo = pacientes.stream().mapToInt(Paciente::getPeso).max().getAsInt();
+            int rango = (pesoMaximo - pesoMinimo) / 4;
+
+            for (int i = pesoMinimo; i <= pesoMaximo; i += rango) {
+                int rangoInicio = i;
+                int rangoFin = i + rango;
+                long cantidadEnRango = pacientes.stream()
+                        .filter(p -> p.getPeso() >= rangoInicio && p.getPeso() < rangoFin)
+                        .count();
+                System.out.println("Rango " + rangoInicio + " a " + rangoFin + ": " + cantidadEnRango + " pacientes");
+            }
+        }
+    }
+    private static void mostrarListaPacientesOrdenados(List<Paciente> pacientes) {
+        if (pacientes.isEmpty()) {
+            System.out.println("No hay pacientes registrados.");
+        } else {
+            List<Paciente> pacientesOrdenados = new ArrayList<>(pacientes);
+            pacientesOrdenados.sort(Comparator.comparing(Paciente::getNombre));
+
+            for (Paciente paciente : pacientesOrdenados) {
+                System.out.println("Nombre: " + paciente.getNombre() + ", Peso: " + paciente.getPeso());
+            }
+        }
+    }
+    private static void indicarMedicoDePaciente(List<Paciente> pacientes, List<Medico> doctores, Scanner scanner) {
+        System.out.println("Ingrese el nombre del paciente:");
+        String nombrePaciente = scanner.next();
+
+        Optional<Paciente> paciente = pacientes.stream().filter(p -> p.getNombre().equalsIgnoreCase(nombrePaciente)).findFirst();
+        if (paciente.isPresent()) {
+            Paciente pacienteEncontrado = paciente.get();
+            Medico medicoAtendiente = pacienteEncontrado.getMedicoAtendiente();
+
+            if (medicoAtendiente != null) {
+                System.out.println("El paciente " + nombrePaciente + " fue atendido por el médico " + medicoAtendiente.getNombre());
+            } else {
+                System.out.println("No se encontró información del médico del paciente " + nombrePaciente);
+            }
+        } else {
+            System.out.println("Paciente no encontrado.");
+        }
+    }
+    private static void buscarMedicosPorEspecialidad(List<Medico> doctores, Scanner scanner) {
+        System.out.println("Ingrese la especialidad a buscar:");
+        String especialidad = scanner.next();
+
+        List<Medico> medicosEncontrados = doctores.stream()
+                .filter(m -> m.getEspecialidad().equalsIgnoreCase(especialidad))
+                .collect(Collectors.toList());
+
+        if (!medicosEncontrados.isEmpty()) {
+            System.out.println("Médicos encontrados con especialidad " + especialidad + ":");
+            for (Medico medico : medicosEncontrados) {
+                System.out.println("Nombre: " + medico.getNombre() + ", Nro. de Colegiatura: " + medico.getNroColegiatura());
+            }
+        } else {
+            System.out.println("No hay medicos con especializados en  " + especialidad);
+        }
     }
 }
+
 
